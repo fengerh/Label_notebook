@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
-  <title>标签笔记 v20260409.1622</title>
+  <title>标签笔记 v20260410.1415</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -135,7 +135,7 @@
     .add-note-wrapper.expanded .add-note-panel { display: block; }
     .add-note-wrapper.expanded .fa-chevron-down { transform: rotate(180deg); }
 
-    /* 表单 —— 响应式布局，移动端紧凑 */
+    /* 表单 */
     .add-form {
       display: flex;
       flex-direction: column;
@@ -173,12 +173,58 @@
     .tag-input-wrapper { 
       display: flex; 
       width: 100%;
+      align-items: center;
+      gap: 4px;
     }
     .tag-input-wrapper input {
       flex: 1;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      border-right: none;
+    }
+    .color-selector {
+      display: flex;
+      align-items: center;
+    }
+    .color-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      background: #ccc;
+      transition: transform 0.1s;
+    }
+    .color-btn:hover { transform: scale(1.05); }
+    .color-picker-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .color-options {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 42px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      padding: 8px;
+      z-index: 100;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .color-options.show {
+      display: grid;
+    }
+    .color-option {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border 0.1s;
+    }
+    .color-option:hover {
+      border-color: #5b6cf7;
     }
     .tag-hint {
       background: #eef1f7;
@@ -215,33 +261,12 @@
       justify-content: flex-end;
     }
 
-    /* 移动端调整：表单元素100%宽度，去除额外边距 */
     @media (max-width: 640px) {
-      .form-row {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .form-group {
-        width: 100%;
-        min-width: auto;
-      }
-      .add-form {
-        gap: 10px;
-      }
-      .add-note-panel {
-        padding: 0 12px 12px 12px;
-      }
-      .btn {
-        width: 100%;          /* 按钮全宽，便于点击 */
-        justify-content: center;
-      }
-      .form-actions {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .form-actions .btn {
-        width: 100%;
-      }
+      .form-row { flex-direction: column; gap: 10px; }
+      .form-group { width: 100%; }
+      .add-note-panel { padding: 0 12px 12px 12px; }
+      .btn { width: 100%; justify-content: center; }
+      .form-actions { flex-direction: column; gap: 8px; }
     }
 
     /* 筛选栏 */
@@ -276,10 +301,10 @@
       .main-layout { flex-direction: column; }
     }
 
-    /* 目录侧边栏 */
+    /* 目录侧边栏 —— 背景加深 */
     .toc-sidebar {
       width: 260px;
-      background: #fbfdff;
+      background: #f4f7fc;  /* 原 #fbfdff 加深 */
       border-right: 1px solid #e9ecf2;
       display: flex;
       flex-direction: column;
@@ -304,7 +329,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 12px 16px;
-      background: #fbfdff;
+      background: #f4f7fc;
       border-bottom: 1px dashed #d7dfe9;
     }
     .toc-header-left { display: flex; align-items: center; gap: 8px; }
@@ -347,7 +372,7 @@
       align-items: center;
       gap: 8px;
     }
-    .toc-tag-dot { width: 8px; height: 8px; border-radius: 8px; }
+    .toc-tag-dot { width: 10px; height: 10px; border-radius: 10px; background: #aaa; }
     .toc-title { font-weight: 540; font-size: 0.9rem; word-break: break-word; flex: 1; }
 
     /* 笔记区 */
@@ -374,9 +399,13 @@
       border: 1px solid #eef2f8;
       scroll-margin-top: 16px;
     }
+    /* 交替底色 */
+    .note-card:nth-child(even) {
+      background: #fafcff;
+    }
     .note-card:target {
       border-left: 5px solid #5b6cf7;
-      background: #fcfdff;
+      background: #fcfdff !important;
     }
     .note-header {
       display: flex;
@@ -415,14 +444,8 @@
       align-items: center;
       gap: 6px;
     }
-    .edit-btn {
-      color: #2c3e50;
-      border-color: #d0d9e8;
-    }
-    .delete-btn {
-      color: #b53b3b;
-      border-color: #f1d7d9;
-    }
+    .edit-btn { color: #2c3e50; border-color: #d0d9e8; }
+    .delete-btn { color: #b53b3b; border-color: #f1d7d9; }
 
     .empty-msg { text-align: center; padding: 30px; color: #7f8fa3; }
     .hidden-file-input { display: none; }
@@ -439,7 +462,6 @@
 </head>
 <body>
 <div class="app-container">
-  <!-- 头部 (略，同前) -->
   <div class="app-header">
     <div class="title-wrapper">
       <i class="fas fa-pen-fancy"></i>
@@ -471,7 +493,12 @@
             <label>标签</label>
             <div class="tag-input-wrapper">
               <input type="text" id="noteTagInput" list="tagDatalist" placeholder="工作/学习">
-              <span class="tag-hint"><i class="far fa-lightbulb"></i></span>
+              <div class="color-selector">
+                <div class="color-picker-dropdown" id="colorPickerDropdown">
+                  <div class="color-btn" id="selectedColorBtn" style="background: #5b6cf7;"></div>
+                  <div class="color-options" id="colorOptions"></div>
+                </div>
+              </div>
             </div>
             <datalist id="tagDatalist"></datalist>
           </div>
@@ -522,11 +549,18 @@
   (function(){
     "use strict";
 
-    // 数据 (同前，但略作精简确保功能完整)
+    // 预设8种颜色
+    const PRESET_COLORS = ['#e05b6c', '#f39c12', '#2ecc71', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#95a5a6'];
+    const DEFAULT_TAG_COLOR = '#5b6cf7'; // 默认蓝紫色
+
+    // 数据
     let notes = [];
     let currentTag = '全部';
     let editingId = null;
+    // 标签颜色映射 { '标签名': '#颜色值' }
+    let tagColorMap = {};
 
+    // DOM 元素
     const mainTitleEl = document.getElementById('mainTitle');
     const addForm = document.getElementById('addNoteForm');
     const titleInput = document.getElementById('noteTitleInput');
@@ -551,6 +585,72 @@
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const editingStatus = document.getElementById('editingStatus');
     const editingIdInput = document.getElementById('editingId');
+    const selectedColorBtn = document.getElementById('selectedColorBtn');
+    const colorOptionsDiv = document.getElementById('colorOptions');
+
+    // 当前选中的标签颜色 (用于表单)
+    let currentSelectedColor = DEFAULT_TAG_COLOR;
+
+    // 初始化颜色选择器
+    function initColorPicker() {
+      let html = '';
+      PRESET_COLORS.forEach(color => {
+        html += `<div class="color-option" style="background: ${color};" data-color="${color}"></div>`;
+      });
+      colorOptionsDiv.innerHTML = html;
+
+      // 点击颜色按钮显示/隐藏选项
+      selectedColorBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        colorOptionsDiv.classList.toggle('show');
+      });
+
+      // 选择颜色
+      colorOptionsDiv.addEventListener('click', (e) => {
+        const option = e.target.closest('.color-option');
+        if (option) {
+          const color = option.dataset.color;
+          currentSelectedColor = color;
+          selectedColorBtn.style.background = color;
+          colorOptionsDiv.classList.remove('show');
+        }
+      });
+
+      // 点击其他地方关闭
+      document.addEventListener('click', () => {
+        colorOptionsDiv.classList.remove('show');
+      });
+
+      // 设置默认颜色
+      selectedColorBtn.style.background = DEFAULT_TAG_COLOR;
+      currentSelectedColor = DEFAULT_TAG_COLOR;
+    }
+
+    // 加载标签颜色映射
+    function loadTagColorMap() {
+      const stored = localStorage.getItem('moxi_tag_colors');
+      if (stored) {
+        try { tagColorMap = JSON.parse(stored); } catch(e){ tagColorMap = {}; }
+      }
+    }
+    function saveTagColorMap() {
+      localStorage.setItem('moxi_tag_colors', JSON.stringify(tagColorMap));
+    }
+
+    // 获取标签显示颜色 (若未设置则返回默认)
+    function getTagColor(tagName) {
+      const normalized = formatTag(tagName);
+      return tagColorMap[normalized] || DEFAULT_TAG_COLOR;
+    }
+
+    // 更新标签颜色 (当用户为某标签选择了新颜色时调用)
+    function updateTagColor(tagName, color) {
+      const normalized = formatTag(tagName);
+      if (normalized !== '未分类') {
+        tagColorMap[normalized] = color;
+        saveTagColorMap();
+      }
+    }
 
     // 折叠面板
     addToggle.addEventListener('click', () => addWrapper.classList.toggle('expanded'));
@@ -587,6 +687,12 @@
         ];
         saveNotes();
       }
+      // 确保标签颜色映射包含已有标签 (初始默认)
+      notes.forEach(n => {
+        const tag = formatTag(n.tag);
+        if (!tagColorMap[tag]) tagColorMap[tag] = DEFAULT_TAG_COLOR;
+      });
+      saveTagColorMap();
     }
     function saveNotes() {
       localStorage.setItem(STORAGE_NOTES_KEY, JSON.stringify(notes));
@@ -623,8 +729,13 @@
       }
       let items = '';
       filtered.forEach(n => {
-        const dotColor = `hsl(${Math.abs(n.tag?.length||0)*37 % 360},70%,65%)`;
-        items += `<li class="toc-item" data-note-id="${n.id}"><span class="toc-tag-dot" style="background:${dotColor};"></span><span class="toc-title">${escapeHtml(n.title)||'无标题'}</span><i class="fas fa-chevron-right" style="opacity:0.5;"></i></li>`;
+        const tag = formatTag(n.tag);
+        const dotColor = getTagColor(tag);
+        items += `<li class="toc-item" data-note-id="${n.id}">
+          <span class="toc-tag-dot" style="background:${dotColor};"></span>
+          <span class="toc-title">${escapeHtml(n.title)||'无标题'}</span>
+          <i class="fas fa-chevron-right" style="opacity:0.5;"></i>
+        </li>`;
       });
       tocContainer.innerHTML = `<ul class="toc-list">${items}</ul>`;
     }
@@ -637,7 +748,11 @@
       }
       let cards = '';
       filtered.forEach(n => {
-        cards += `<div class="note-card" id="note-${n.id}"><div class="note-header"><div class="note-title">${escapeHtml(n.title)}</div><span class="note-tag">${escapeHtml(formatTag(n.tag))}</span></div><div class="note-content">${escapeHtml(n.content).replace(/\n/g,'<br>')}</div><div class="note-actions"><button class="edit-btn" data-edit-id="${n.id}"><i class="far fa-edit"></i>编辑</button><button class="delete-btn" data-delete-id="${n.id}"><i class="far fa-trash-alt"></i>删除</button></div></div>`;
+        cards += `<div class="note-card" id="note-${n.id}">
+          <div class="note-header"><div class="note-title">${escapeHtml(n.title)}</div><span class="note-tag">${escapeHtml(formatTag(n.tag))}</span></div>
+          <div class="note-content">${escapeHtml(n.content).replace(/\n/g,'<br>')}</div>
+          <div class="note-actions"><button class="edit-btn" data-edit-id="${n.id}"><i class="far fa-edit"></i>编辑</button><button class="delete-btn" data-delete-id="${n.id}"><i class="far fa-trash-alt"></i>删除</button></div>
+        </div>`;
       });
       notesContainer.innerHTML = cards;
     }
@@ -651,13 +766,21 @@
       saveNoteBtn.innerHTML = '<i class="fas fa-check"></i> 保存';
       editingStatus.style.display = 'none';
       cancelEditBtn.style.display = 'none';
+      currentSelectedColor = DEFAULT_TAG_COLOR;
+      selectedColorBtn.style.background = DEFAULT_TAG_COLOR;
     }
 
     function startEditNote(id) {
       const note = notes.find(n => n.id === id);
       if (!note) return;
       editingId = id; editingIdInput.value = id;
-      titleInput.value = note.title; tagInput.value = note.tag; contentInput.value = note.content;
+      titleInput.value = note.title;
+      tagInput.value = note.tag;
+      contentInput.value = note.content;
+      const tag = formatTag(note.tag);
+      const tagColor = getTagColor(tag);
+      currentSelectedColor = tagColor;
+      selectedColorBtn.style.background = tagColor;
       toggleText.textContent = `编辑笔记 · ${note.title.substring(0,15)}`;
       saveNoteBtn.innerHTML = '<i class="fas fa-save"></i> 更新';
       editingStatus.style.display = 'inline-flex';
@@ -668,7 +791,14 @@
 
     function saveNote(title, tag, content) {
       if (!title.trim() || !content.trim()) { alert('标题和内容必填'); return false; }
-      const trimmedTitle = title.trim(), trimmedContent = content.trim(), trimmedTag = tag.trim() || '未分类';
+      const trimmedTitle = title.trim(), trimmedContent = content.trim();
+      let trimmedTag = tag.trim() || '未分类';
+      
+      // 更新标签颜色映射 (如果用户选择了新颜色)
+      if (trimmedTag !== '未分类') {
+        updateTagColor(trimmedTag, currentSelectedColor);
+      }
+
       if (editingId) {
         const index = notes.findIndex(n => n.id === editingId);
         if (index !== -1) notes[index] = { ...notes[index], title: trimmedTitle, content: trimmedContent, tag: trimmedTag };
@@ -692,9 +822,10 @@
       if (editingId === id) { resetFormState(); addWrapper.classList.remove('expanded'); }
     }
 
-    // 导入导出 (保持与之前一致)
+    // 导入导出
     function exportJson() {
-      const blob = new Blob([JSON.stringify(notes, null, 2)], {type:'application/json'});
+      const exportData = { notes, tagColorMap };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:'application/json'});
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `notes_${new Date().toISOString().slice(0,10)}.json`; a.click();
     }
     function exportCsv() {
@@ -703,35 +834,56 @@
       const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `notes_${new Date().toISOString().slice(0,10)}.csv`; a.click();
     }
-    function parseCSVLine(line){ /* 同前 */ 
+    function parseCSVLine(line){ 
       const result=[]; let current='', inQuotes=false;
       for(let i=0;i<line.length;i++){ const ch=line[i]; if(ch==='"'&&!inQuotes) inQuotes=true; else if(ch==='"'&&inQuotes){ if(i+1<line.length&&line[i+1]==='"'){ current+='"'; i++; } else inQuotes=false; } else if(ch===','&&!inQuotes){ result.push(current); current=''; } else current+=ch; }
       result.push(current); return result;
     }
-    function processImported(importedNotes) {
-      const valid = importedNotes.filter(i=>i.title&&i.content).map((item,idx)=>({ id: `import_${Date.now()}_${idx}`, title:item.title, content:item.content, tag:item.tag||'未分类' }));
+    function processImported(importedNotes, importedTagColorMap = null) {
+      const valid = importedNotes.filter(i=>i.title&&i.content).map((item,idx)=>({ id: item.id || `import_${Date.now()}_${idx}`, title:item.title, content:item.content, tag:item.tag||'未分类' }));
       if(!valid.length){ alert('无有效笔记'); return; }
-      if(confirm(`导入 ${valid.length} 条。合并？(取消替换)`)) notes = [...notes, ...valid]; else notes = valid;
-      saveNotes(); currentTag='全部'; resetFormState(); renderAll();
+      if(confirm(`导入 ${valid.length} 条。合并？(取消替换)`)) {
+        notes = [...notes, ...valid];
+      } else {
+        notes = valid;
+      }
+      if (importedTagColorMap) {
+        tagColorMap = { ...tagColorMap, ...importedTagColorMap };
+      }
+      saveNotes();
+      saveTagColorMap();
+      currentTag='全部';
+      resetFormState();
+      renderAll();
     }
     function importFile(file) {
       const ext = file.name.split('.').pop().toLowerCase();
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          if(ext==='json') { const imported = JSON.parse(e.target.result); if(!Array.isArray(imported)) throw new Error('非数组'); processImported(imported); }
-          else {
-            const lines = e.target.result.split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2){ alert('CSV无数据'); return; }
+          if(ext==='json') {
+            const imported = JSON.parse(e.target.result);
+            let importedNotes = Array.isArray(imported) ? imported : imported.notes;
+            let importedColors = imported.tagColorMap || null;
+            if (!Array.isArray(importedNotes)) throw new Error('非数组');
+            processImported(importedNotes, importedColors);
+          } else {
+            const lines = e.target.result.split(/\r?\n/).filter(l=>l.trim());
+            if(lines.length<2){ alert('CSV无数据'); return; }
             const headers = lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim());
             const titleIdx = headers.findIndex(h=>h.includes('标题')||h==='title');
             const tagIdx = headers.findIndex(h=>h.includes('标签')||h==='tag');
             const contentIdx = headers.findIndex(h=>h.includes('内容')||h==='content');
             if(titleIdx===-1||contentIdx===-1){ alert('CSV需包含标题和内容列'); return; }
             const imported = [];
-            for(let i=1;i<lines.length;i++){ const row=parseCSVLine(lines[i]); if(row.length<=Math.max(titleIdx,contentIdx)) continue;
+            for(let i=1;i<lines.length;i++){ 
+              const row=parseCSVLine(lines[i]); 
+              if(row.length<=Math.max(titleIdx,contentIdx)) continue;
               const title=(row[titleIdx]||'').replace(/^"|"$/g,'').trim(), content=(row[contentIdx]||'').replace(/^"|"$/g,'').trim();
-              if(!title||!content) continue; let tag = tagIdx>=0 ? (row[tagIdx]||'').replace(/^"|"$/g,'').trim() : '未分类';
-              imported.push({title,content,tag:tag||'未分类'}); }
+              if(!title||!content) continue; 
+              let tag = tagIdx>=0 ? (row[tagIdx]||'').replace(/^"|"$/g,'').trim() : '未分类';
+              imported.push({title,content,tag:tag||'未分类'}); 
+            }
             processImported(imported);
           }
         } catch(err){ alert('解析失败: '+err.message); }
@@ -761,7 +913,12 @@
     importBtn.addEventListener('click', ()=>importFileInput.click());
     importFileInput.addEventListener('change', e=>{ if(importFileInput.files[0]) importFile(importFileInput.files[0]); });
 
-    loadTitle(); loadNotes(); renderAll();
+    // 初始化
+    loadTagColorMap();
+    loadTitle();
+    loadNotes();
+    initColorPicker();
+    renderAll();
   })();
 </script>
 </body>
