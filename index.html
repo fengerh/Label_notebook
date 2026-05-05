@@ -669,7 +669,7 @@
       if (saved) mainTitleEl.textContent = saved;
     }
     function saveTitle() {
-      localStorage.setItem(STORAGE_TITLE_KEY, mainTitleEl.textContent.trim() || '墨息 · 标签笔记');
+      localStorage.setItem(STORAGE_TITLE_KEY, mainTitleEl.textContent.trim() || '标签笔记');
     }
     mainTitleEl.addEventListener('blur', saveTitle);
     mainTitleEl.addEventListener('keydown', (e) => { if(e.key==='Enter'){ e.preventDefault(); mainTitleEl.blur(); } });
